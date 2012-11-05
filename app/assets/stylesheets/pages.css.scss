@@ -1,6 +1,30 @@
 // Place all the styles related to the pages controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+.header{
+	height:100px;
+	padding:50px;
+	background:#01abc4;
+	img{
+	  height:45px;
+	}
+	h1{
+	  font-size:42px;
+	  line-height:45px;
+	}
+	p{
+      margin-left:7px;
+	}
+}
+    
+.text-logo{
+	float:left;
+}
+.box-shadow{
+   box-shadow: 0px 1px 2px 0px #333;
+   -webkit-box-shadow: 0px 1px 2px 0px #333;
+   -moz-box-shadow: 0px 1px 2px 0px #333;
+}
 .bar{
 	display:inline-block;
 	width:20px;
@@ -19,7 +43,7 @@ text{
 .legend-container{
 	position:absolute;
 	left:960px;
-	top:20px;
+	top:220px;
 	width:150px;
 	svg{
 	  float:left;
