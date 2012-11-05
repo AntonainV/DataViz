@@ -1,0 +1,31 @@
+// Place all the styles related to the pages controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.bar{
+	display:inline-block;
+	width:20px;
+	height:75px;
+	background-color:teal;
+	margin-right:10px;
+}
+path.link{
+	fill:none;
+	stroke:gray;
+}
+text{
+	display:none;
+}
+
+.legend-container{
+	position:absolute;
+	left:960px;
+	top:20px;
+	width:150px;
+	svg{
+	  float:left;
+	  position:relative;
+	  top:4px;
+	  margin-right:5px;
+	}
+}
+//Interaction css here

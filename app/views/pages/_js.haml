@@ -1,0 +1,79 @@
+:javascript
+  $(function(){
+    buildTree(".tree-container");
+  })
+  
+  var COLOR_USER ="#9467BD";
+  var COLOR_ITEM ="#D62728";
+  var COLOR_POLL ="#2CA02C";
+  var COLOR_CATEGORY ="#FF7F0E";
+  var COLOR_MUSEME ="#1F77B4";
+  var COLOR_USER_HIGHLIGHT ="#333";
+  var COLOR_ITEM_HIGHLIGHT="#333";
+  var COLOR_POLL_HIGHLIGHT ="#333";
+  var COLOR_CATEGORY_HIGHLIGHT ="#ffb574";
+  var COLOR_MUSEME_HIGHLIHGT ="#1F77B4";
+  var categoryNames = ["Art","Beauty","Cars","CuteThings","Eletronics","Events","Fashion","Food","Humor","Media","Travel","Other"];
+  //interaction js here
+  $(document).ready(function(){
+    var originalColor;
+    var radius = 2;
+    $('.user').tooltip();
+    //$('.category').children('text').css('display','block');
+  	$('.user').hover(function(){
+        highlight($(this),2.5,COLOR_USER_HIGHLIGHT,COLOR_ITEM_HIGHLIGHT,COLOR_POLL_HIGHLIGHT,true);
+  	  },
+    	function(){
+        highlight($(this),1,COLOR_USER,COLOR_ITEM,COLOR_POLL,false);
+    	}
+    );
+  	
+
+    function highlight($user,N,color_user,color_item,color_poll,flag){
+      var title = $user.attr('data-original-title');
+      var categoryCount={};
+        for(i=0;i<categoryNames.length;i++) categoryCount[categoryNames[i]]=0;
+      selectedUsers = d3.selectAll('.'+title)
+          .style("fill",color_user)
+        .select('circle')
+          .attr("r",radius*N);
+      $('.'+title).each(function(){
+        var itemClass = $(this).attr('class').match(/item_[\d]+/).toString();
+        var items = d3.selectAll('.'+itemClass)
+            .style("fill",color_item);
+        items.each(function(){
+          var pollClass = $(this).attr('class').match(/poll_[\d]+/).toString();
+          var polls = d3.selectAll('.'+pollClass)
+              .style("fill",color_poll);
+          if(flag){
+            polls.each(function(){
+              var categoryClass = $(this).attr('class').match(/[\d]+_[A-z]+/).toString().replace(/[\d]+_/,'');
+              categoryCount[categoryClass]=categoryCount[categoryClass]+1;           
+            });
+          }
+        });
+      });
+      if(flag){
+        var categorys = d3.selectAll('.category')
+            .attr('rel','tooltip')
+            .attr('data-original-title',function(d){
+              var title = $(this).attr('class').replace(/category /,'');
+              console.log(categoryCount);
+              return categoryCount[title];
+            });
+        $('.category').tooltip('show');
+      }
+      else{
+        var categorys = d3.selectAll('.category')
+            .attr('data-original-title',null);
+        $('.category').tooltip('hide');
+      }
+
+    }
+
+
+  })
+
+
+  
+
