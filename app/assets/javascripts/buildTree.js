@@ -41,7 +41,7 @@ function loadData(users,polls,relationships,items,audiences){
     var usersMap = new Array();
     data["users"].forEach(function(value){
       var user={};
-      user.name = value.user_name.match(/[^ |^\']+/);
+      user.name = value.user_name.match(/[^ |^\'|^\.]+/);
       user.group = "user";
       usersMap[value.id]=user;
     });
