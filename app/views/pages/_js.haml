@@ -11,10 +11,11 @@
   var COLOR_POLL_HIGHLIGHT ="#333";
   var categoryNames = ["Art","Beauty","Cars","CuteThings","Eletronics","Events","Fashion","Food","Humor","Media","Travel","Other"];
   var categoryColor = d3.scale.category20(); 
-
+  $(function(){
+    buildTree(COLORS,".tree-container");
+  });
   //interaction js here
   $(document).ready(function(){
-    buildTree(COLORS,".tree-container");
     var originalColor;
     var radius = 2;
     $('.user').tooltip();
