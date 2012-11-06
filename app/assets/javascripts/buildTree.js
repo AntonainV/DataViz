@@ -16,21 +16,6 @@ function loadData(users,polls,relationships,items,audiences){
       } 
     })
   });
-  /*
-  d3.csv(users+".csv",function(userData){
-    d3.csv(items+".csv",function(itemData){
-      d3.csv(polls+".csv",function(pollData){
-        d3.csv(audiences+".csv",function(audienceData){
-          data["users"]=userData;
-          data["polls"]=pollData;
-          data["items"]=itemData;
-          data["audiences"]=audienceData;
-          constructTreeData();
-        });
-      });
-    });
-  });
-  */
 
   function constructTreeData(){
 
@@ -325,9 +310,7 @@ function pieLegend(data,container,color){
       });  
   legend.append("svg:text")
       .attr("transform",function(d,i){
-        if(i<6) return "translate("+(70*i)+","+(r*2+fontHeight)+")";
-        else return "translate("+70*(i-6)+","+(r*7+fontHeight)+")"
-        
+        return i<6 ? "translate("+(70*i)+","+(r*2+fontHeight)+")" : "translate("+70*(i-6)+","+(r*7+fontHeight)+")";
       })
       .text(function(d,i){return data[i].label;});   
 }
