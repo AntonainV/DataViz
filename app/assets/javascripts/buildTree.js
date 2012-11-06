@@ -2,6 +2,7 @@ var treeData = {};
     treeData.name = "Muse Me"
     treeData.children = new Array();
     treeData.group = "MuseMe";
+var groupMap = {"MuseMe":0,"category":1,"poll":2,"item":3,"user":4};
 
 function loadData(users,polls,relationships,items,audiences){
   var files = new Array(users,polls,relationships,items,audiences);
@@ -44,7 +45,7 @@ function loadData(users,polls,relationships,items,audiences){
       user.group = "user";
       usersMap[value.id]=user;
     });
-    console.log(usersMap);
+    //console.log(usersMap);
     
    /* --------------------------------
     * construct item object, put in the itemsMap array
@@ -136,7 +137,7 @@ function loadData(users,polls,relationships,items,audiences){
 
 loadData("users","polls","relationships","items","audiences");
 
-function buildTree(containerName, customOptions)
+function buildTree(color,containerName, customOptions)
 {
   // build the options object
   var radius = 960/2;
@@ -202,7 +203,6 @@ function buildTree(containerName, customOptions)
           <text />
       </g>
    */
-  var color = d3.scale.category10();
   var nodeGroup = layoutRoot.selectAll("g.node")
       .data(nodes)
       .enter()
@@ -228,8 +228,8 @@ function buildTree(containerName, customOptions)
           }
           if(d.group == "poll"){
             var title = d.name.match(/poll_[\d]+/);
-            console.log(d.name);
-            console.log(title);
+            //console.log(d.name);
+            //console.log(title);
           }
           return d.group+" "+title+" "+d.name;
         }
@@ -239,7 +239,7 @@ function buildTree(containerName, customOptions)
         else {return d.group +" "+d.name;}     
       })
       .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-      .style("fill", function(d) { return color(d.group); });
+      .style("fill", function(d) { return color[groupMap[d.group]]; });
 
   nodeGroup.append("svg:circle")
       .attr("class", "node-dot")
@@ -263,22 +263,73 @@ function buildTree(containerName, customOptions)
           return options.nodeRadius;
         }
       });
+}
 
-  nodeGroup.append("svg:text")
-      .attr("text-anchor", function(d)
-      {
-          return d.children ? "end" : "start";
+//pie chart
+function pie(data,container,color){
+  var w = 300, h=300, r=100;  
+  var vis = d3.select(container)
+      .append("svg:svg")              //create the SVG element inside the <body>
+      .data([data])                   //associate our data with the document
+          .attr("width", w)           //set the width and height of our visualization (these will be attributes of the <svg> tag
+          .attr("height", h)
+      .append("svg:g")                //make a group to hold our pie chart
+          .attr("transform", "translate(" + w/2 + "," + 175 + ")")    //move the center of the pie chart from 0, 0 to radius, radius
+  
+  
+
+  var arc = d3.svg.arc()              //this will create <path> elements for us using arc data
+      .outerRadius(r);
+
+  var pie = d3.layout.pie()           //this will create arc data for us given a list of values
+      .value(function(d) { return d.value; });    //we must tell it out to access the value of each element in our data array
+
+  var arcs = vis.selectAll("g.slice")     
+      .data(pie)                            
+      .enter()                            
+          .append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+              .attr("class", "slice");    //allow us to style things in the slices (like text)
+
+      arcs.append("svg:path")
+              .attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
+              .attr("d", arc);                                    //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+
+      arcs.append("svg:text")                                     //add a label to each slice
+              .attr("transform", function(d) {                    //set the label's origin to the center of the arc
+              //we have to make sure to set these before calling arc.centroid
+              d.innerRadius = r*1.2;
+              d.outerRadius = r*10;
+              return "translate(" + arc.centroid(d) + ")";        //this gives us a pair of coordinates like [50, 50]
+          })
+          .attr("text-anchor", "middle")                          //center the text on it's origin
+          .text(function(d, i) { return data[i].value; }); 
+}
+
+function pieLegend(data,container,color){
+  var w = 500, h=400, r=10;  
+  var fontHeight = 15;
+  var vis = d3.select(container)
+      .append("svg:svg");
+  legend = vis.selectAll("g.legend")
+      .data(data)
+      .enter()
+      .append("svg:g")
+      .attr("class","legend");
+  legend.append("svg:circle")
+      .attr("fill",function(d,i){return color(i);})
+      .attr("r",r)
+      .attr("transform",function(d,i){
+        if(i<6) return "translate("+(70*i+r)+","+r+")";
+        else return "translate("+(70*(i-6)+r)+","+r*6+")"
+        
+      });  
+  legend.append("svg:text")
+      .attr("transform",function(d,i){
+        if(i<6) return "translate("+(70*i)+","+(r*2+fontHeight)+")";
+        else return "translate("+70*(i-6)+","+(r*7+fontHeight)+")"
+        
       })
-      .attr("dx", function(d)
-      {
-          var gap = 2 * options.nodeRadius;
-          return d.children ? -gap : gap;
-      })
-      .attr("dy", 3)
-      .text(function(d)
-      {
-          return d.name;
-      });
+      .text(function(d,i){return data[i].label;});   
 }
 
 
