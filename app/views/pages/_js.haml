@@ -12,11 +12,9 @@
   var categoryNames = ["Art","Beauty","Cars","CuteThings","Eletronics","Events","Fashion","Food","Humor","Media","Travel","Other"];
   var categoryColor = d3.scale.category20(); 
 
-  $(function(){
-    buildTree(COLORS,".tree-container");
-  })
   //interaction js here
   $(document).ready(function(){
+    buildTree(COLORS,".tree-container");
     var originalColor;
     var radius = 2;
     $('.user').tooltip();
@@ -67,11 +65,6 @@
       });
       if(flag){
         var categorys = d3.selectAll('.category')
-            /*.attr('rel','tooltip')
-            .attr('data-original-title',function(d){
-              var title = $(this).attr('class').replace(/category /,'');
-              return find_hash_in_arr(title,categoryCount).value;
-            })*/
             .style("fill",function(d){
               var title = $(this).attr('class').replace(/category /,'');
               return categoryColor(categoryNames.indexOf(title));
@@ -84,15 +77,11 @@
       }
       else{
         var categorys = d3.selectAll('.category')
-            //.attr('data-original-title',null)
             .style("fill",COLOR_CATEGORY);
-        //$('.category').tooltip('hide');
         $(".pie-container").css("display","none");
         $('.pie-container svg').remove();
         $('.pie-container p').remove();
-
       }
-
     }
 
     function find_hash_in_arr(value,arr){
