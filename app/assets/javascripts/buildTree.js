@@ -1,8 +1,24 @@
+var COLORS = ["#258693","#00707F","#01ACC4","#39cde2","#66d2e2"];
+var COLOR_USER =COLORS[4];
+var COLOR_ITEM =COLORS[3];
+var COLOR_POLL =COLORS[2];
+var COLOR_CATEGORY =COLORS[1];
+var COLOR_MUSEME =COLORS[0];
+var COLOR_USER_HIGHLIGHT ="#333";
+var COLOR_ITEM_HIGHLIGHT="#333";
+var COLOR_POLL_HIGHLIGHT ="#333";
+var categoryNames = ["Art","Beauty","Cars","CuteThings","Eletronics","Events","Fashion","Food","Humor","Media","Travel","Other"];
+var categoryColor = d3.scale.category20(); 
 var treeData = {};
     treeData.name = "Muse Me"
     treeData.children = new Array();
     treeData.group = "MuseMe";
 var groupMap = {"MuseMe":0,"category":1,"poll":2,"item":3,"user":4};
+
+//$(function(){
+$(document).ready(function(){
+  loadData("users","polls","relationships","items","audiences"); 
+});
 
 function loadData(users,polls,relationships,items,audiences){
   var files = new Array(users,polls,relationships,items,audiences);
@@ -12,7 +28,9 @@ function loadData(users,polls,relationships,items,audiences){
     d3.csv(value+".csv",function(csv){
       data[value]=csv;
       if(!--remaining){
+        console.log("hello1");
         constructTreeData();
+        console.log("hello2");
       } 
     })
   });
@@ -117,12 +135,14 @@ function loadData(users,polls,relationships,items,audiences){
     categorysMap.forEach(function(category){
       treeData.children.push(category);
     });
+    buildTree(COLORS,".tree-container");
+    interaction();
   } 
 }
 
-loadData("users","polls","relationships","items","audiences");
+//console.log(treeData);
 
-function buildTree(color,containerName, customOptions)
+function buildTree(color,containerName,customOptions)
 {
   // build the options object
   var radius = 960/2;
@@ -315,6 +335,87 @@ function pieLegend(data,container,color){
       .text(function(d,i){return data[i].label;});   
 }
 
+function interaction(){
+  console.log("document is ready!");
+  var originalColor;
+  var radius = 2;
+  $('.user').tooltip();
 
+  $('.legend-container circle').each(function(i,v){
+    $(this).attr("fill",COLORS[i]);
+  });
+
+
+  $('.user').hover(function(){
+      highlight($(this),2.5,COLOR_USER_HIGHLIGHT,COLOR_ITEM_HIGHLIGHT,COLOR_POLL_HIGHLIGHT,true);
+    },
+    function(){
+      highlight($(this),1,COLOR_USER,COLOR_ITEM,COLOR_POLL,false);
+    }
+  );
+
+  function highlight($user,N,color_user,color_item,color_poll,flag){
+    var title = $user.attr('data-original-title');
+    totalVotes = $("."+title).length;
+    var categoryCount=new Array();
+    for(i=0;i<categoryNames.length;i++){
+      var category = {};
+      category.label = categoryNames[i];
+      category.value = 0;
+      categoryCount.push(category);
+    }
+    selectedUsers = d3.selectAll('.'+title)
+        .style("fill",color_user)
+      .select('circle')
+        .attr("r",radius*N);
+    $('.'+title).each(function(){
+      var itemClass = $(this).attr('class').match(/item_[\d]+/).toString();
+      var items = d3.selectAll('.'+itemClass)
+          .style("fill",color_item);
+      items.each(function(){
+        var pollClass = $(this).attr('class').match(/poll_[\d]+/).toString();
+        var polls = d3.selectAll('.'+pollClass)
+            .style("fill",color_poll);
+        if(flag){
+          polls.each(function(){
+            var categoryClass = $(this).attr('class').match(/[\d]+_[A-z]+/).toString().replace(/[\d]+_/,'');
+            categoryHash = find_hash_in_arr(categoryClass,categoryCount);
+            categoryHash.value=categoryHash.value+1;
+          });
+        }
+      });
+    });
+    if(flag){
+      var categorys = d3.selectAll('.category')
+          .style("fill",function(d){
+            var title = $(this).attr('class').replace(/category /,'');
+            return categoryColor(categoryNames.indexOf(title));
+          });
+      $('.category').tooltip('show');
+      addLegendTitle(title,totalVotes,$(".pie-container"));
+      pie(categoryCount,".pie-container",categoryColor);
+      pieLegend(categoryCount,".pie-container",categoryColor);
+      $(".pie-container").css("display","block");
+    }
+    else{
+      var categorys = d3.selectAll('.category')
+          .style("fill",COLOR_CATEGORY);
+      $(".pie-container").css("display","none");
+      $('.pie-container svg').remove();
+      $('.pie-container p').remove();
+    }
+  }
+  /* <p> name has totalVotes votes </p>*/
+  function addLegendTitle(name,totalVotes,$container){
+    $container.append("<p> "+name+" has "+totalVotes+" votes.</p>");
+  }
+}
+
+function find_hash_in_arr(value,arr){
+  filter_arr = arr.filter(function(e){
+    return e.label == value;
+  })
+  return filter_arr[0];
+}
 
   
