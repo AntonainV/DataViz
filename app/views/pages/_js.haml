@@ -1,6 +1,6 @@
 :javascript
   
-  var COLORS = ["#585810","#838318","#aeaf1f","#d7d829","#dfe054"];
+  var COLORS = ["#258693","#00707F","#01ACC4","#39cde2","#66d2e2"];
   var COLOR_USER =COLORS[4];
   var COLOR_ITEM =COLORS[3];
   var COLOR_POLL =COLORS[2];
@@ -80,14 +80,17 @@
         addLegendTitle(title,totalVotes,$(".pie-container"));
         pie(categoryCount,".pie-container",categoryColor);
         pieLegend(categoryCount,".pie-container",categoryColor);
+        $(".pie-container").css("display","block");
       }
       else{
         var categorys = d3.selectAll('.category')
             .attr('data-original-title',null)
             .style("fill",COLOR_CATEGORY);
         $('.category').tooltip('hide');
+        $(".pie-container").css("display","none");
         $('.pie-container svg').remove();
         $('.pie-container p').remove();
+
       }
 
     }
