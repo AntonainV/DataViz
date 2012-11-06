@@ -36,6 +36,7 @@
 
     function highlight($user,N,color_user,color_item,color_poll,flag){
       var title = $user.attr('data-original-title');
+      totalVotes = $("."+title).length;
       var categoryCount=new Array();
       for(i=0;i<categoryNames.length;i++){
         var category = {};
@@ -76,6 +77,7 @@
               return categoryColor(categoryNames.indexOf(title));
             });
         $('.category').tooltip('show');
+        addLegendTitle(title,totalVotes,$(".pie-container"));
         pie(categoryCount,".pie-container",categoryColor);
         pieLegend(categoryCount,".pie-container",categoryColor);
       }
@@ -85,6 +87,7 @@
             .style("fill",COLOR_CATEGORY);
         $('.category').tooltip('hide');
         $('.pie-container svg').remove();
+        $('.pie-container p').remove();
       }
 
     }
@@ -94,6 +97,10 @@
         return e.label == value;
       })
       return filter_arr[0];
+    }
+    /* <p> name has totalVotes votes </p>*/
+    function addLegendTitle(name,totalVotes,$container){
+      $container.append("<p> "+name+" has "+totalVotes+" votes.</p>");
     }
 
   })

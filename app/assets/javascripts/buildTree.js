@@ -267,14 +267,14 @@ function buildTree(color,containerName, customOptions)
 
 //pie chart
 function pie(data,container,color){
-  var w = 300, h=300, r=100;  
+  var w = 400, h=300, r=100;  
   var vis = d3.select(container)
       .append("svg:svg")              //create the SVG element inside the <body>
       .data([data])                   //associate our data with the document
           .attr("width", w)           //set the width and height of our visualization (these will be attributes of the <svg> tag
           .attr("height", h)
       .append("svg:g")                //make a group to hold our pie chart
-          .attr("transform", "translate(" + w/2 + "," + 175 + ")")    //move the center of the pie chart from 0, 0 to radius, radius
+          .attr("transform", "translate(" + w/2 + "," + 150 + ")")    //move the center of the pie chart from 0, 0 to radius, radius
   
   
 

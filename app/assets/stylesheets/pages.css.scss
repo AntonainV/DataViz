@@ -21,12 +21,18 @@ body{
 	background-color:#eee;
 }
 .pie-container{
-	width:500px;
-	height:400px;
+	width:400px;
+	height:460px;
+	padding:20px;
 	border:1px solid #999;
 	position:absolute;
 	left:960px;
 	top:450px;
+	p{
+	  font-size:18px;
+	  line-height:22px;
+	  margin-top:14px;
+	}
 }
 .text-logo{
 	float:left;
