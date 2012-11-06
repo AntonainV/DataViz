@@ -16,21 +16,6 @@ function loadData(users,polls,relationships,items,audiences){
       } 
     })
   });
-  /*
-  d3.csv(users+".csv",function(userData){
-    d3.csv(items+".csv",function(itemData){
-      d3.csv(polls+".csv",function(pollData){
-        d3.csv(audiences+".csv",function(audienceData){
-          data["users"]=userData;
-          data["polls"]=pollData;
-          data["items"]=itemData;
-          data["audiences"]=audienceData;
-          constructTreeData();
-        });
-      });
-    });
-  });
-  */
 
   function constructTreeData(){
 
